@@ -20,6 +20,15 @@ const F = {
   MANZOTTI: 'Farmacia Manzotti',
 };
 
+// Horario de atención (fuera de la farmacia de turno). Una línea por franja:
+// `dias` usa 1 = lunes … 6 = sábado, 7 = domingo; horas en formato 24 h.
+// Fuera de estas franjas la farmacia figura cerrada (salvo si está de turno).
+// Los feriados no se tienen en cuenta.
+const HORARIO_COMUN = [
+  { dias: [1, 2, 3, 4, 5], desde: '08:30', hasta: '12:00' },
+  { dias: [1, 2, 3, 4, 5], desde: '16:00', hasta: '20:00' },
+];
+
 const DATA = {
   // Fecha de la última actualización de los datos (se muestra en el inicio).
   actualizado: '2026-11-20',
@@ -77,17 +86,18 @@ const DATA = {
   },
 
   // `id` no se repite y no cambia (se usa en la dirección de cada farmacia).
+  // `horario`: HORARIO_COMUN, o una lista propia con el mismo formato si una farmacia atiende distinto.
   farmacias: [
-    { id: 1, name: F.ARGENTINA, address: 'Hipólito Yrigoyen 444', phone: '452246', latitude: 40.4168, longitude: -3.7038 },
-    { id: 2, name: F.SORALUCE, address: 'Av. Avellaneda 777', phone: '450085', latitude: -36.0218168, longitude: -59.100389 },
-    { id: 3, name: F.PACULNIS, address: 'Av. San Martín 911', phone: '450688', latitude: -36.01981885136401, longitude: -59.09396280291596 },
-    { id: 4, name: F.PASTEUR, address: 'Pueyrredón 515', phone: '442250', latitude: -36.0190793870177, longitude: -59.09996103107345 },
-    { id: 5, name: F.SAN_MARTIN, address: 'Av. San Martín 430', phone: '452223', latitude: -36.015405158497785, longitude: -59.0997296216459 },
-    { id: 6, name: F.NIETO, address: 'Av. Pte. Perón 697', phone: '440994', latitude: -36.0133786, longitude: -59.0931463 },
-    { id: 7, name: F.MAFREN, address: 'Av. San Martín 289', phone: '450783', latitude: -36.01166721191306, longitude: -59.10460516175925 },
-    { id: 8, name: F.GIRALDI, address: 'Av. Pte Perón y Bernardo de Irigoyen', phone: '440878', latitude: -36.01592945917803, longitude: -59.08987060192867 },
-    { id: 9, name: F.DI_BERNARDI, address: 'Av. Avellaneda y Av. Rivadavia', phone: '452848', latitude: -36.01806495482405, longitude: -59.10504136249648 },
-    { id: 10, name: F.MANZOTTI, address: 'Harosteguy 315', phone: '453944', latitude: -36.01467411398398, longitude: -59.09644469622471 },
+    { id: 1, name: F.ARGENTINA, address: 'Hipólito Yrigoyen 444', phone: '452246', latitude: 40.4168, longitude: -3.7038, horario: HORARIO_COMUN },
+    { id: 2, name: F.SORALUCE, address: 'Av. Avellaneda 777', phone: '450085', latitude: -36.0218168, longitude: -59.100389, horario: HORARIO_COMUN },
+    { id: 3, name: F.PACULNIS, address: 'Av. San Martín 911', phone: '450688', latitude: -36.01981885136401, longitude: -59.09396280291596, horario: HORARIO_COMUN },
+    { id: 4, name: F.PASTEUR, address: 'Pueyrredón 515', phone: '442250', latitude: -36.0190793870177, longitude: -59.09996103107345, horario: HORARIO_COMUN },
+    { id: 5, name: F.SAN_MARTIN, address: 'Av. San Martín 430', phone: '452223', latitude: -36.015405158497785, longitude: -59.0997296216459, horario: HORARIO_COMUN },
+    { id: 6, name: F.NIETO, address: 'Av. Pte. Perón 697', phone: '440994', latitude: -36.0133786, longitude: -59.0931463, horario: HORARIO_COMUN },
+    { id: 7, name: F.MAFREN, address: 'Av. San Martín 289', phone: '450783', latitude: -36.01166721191306, longitude: -59.10460516175925, horario: HORARIO_COMUN },
+    { id: 8, name: F.GIRALDI, address: 'Av. Pte Perón y Bernardo de Irigoyen', phone: '440878', latitude: -36.01592945917803, longitude: -59.08987060192867, horario: HORARIO_COMUN },
+    { id: 9, name: F.DI_BERNARDI, address: 'Av. Avellaneda y Av. Rivadavia', phone: '452848', latitude: -36.01806495482405, longitude: -59.10504136249648, horario: HORARIO_COMUN },
+    { id: 10, name: F.MANZOTTI, address: 'Harosteguy 315', phone: '453944', latitude: -36.01467411398398, longitude: -59.09644469622471, horario: HORARIO_COMUN },
   ],
 
   // Farmacia de turno por día del mes (de 8 a 8: antes de las 8 de la mañana

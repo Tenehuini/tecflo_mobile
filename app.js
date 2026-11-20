@@ -40,9 +40,39 @@ function activeTurnoName() {
   if (d.getHours() < 8) d.setDate(d.getDate() - 1);
   return DATA.turnos[String(d.getDate())] ?? null;
 }
+
+// ¿Está dentro de su horario de atención en este momento? (hasta = ya cerró)
+function enHorario(horario, now = new Date()) {
+  const dia = now.getDay() || 7; // 1 = lunes … 7 = domingo
+  const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  return (horario ?? []).some((f) => f.dias.includes(dia) && f.desde <= hhmm && hhmm < f.hasta);
+}
+
+// "Lun a Vie 8:30–12:00 y 16:00–20:00" (agrupa las franjas que tienen los mismos días).
+const DIAS = ['', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+function textoHorario(horario) {
+  const grupos = new Map();
+  for (const f of horario ?? []) {
+    const key = [...f.dias].sort().join(',');
+    if (!grupos.has(key)) grupos.set(key, []);
+    grupos.get(key).push(`${f.desde.replace(/^0/, '')}–${f.hasta.replace(/^0/, '')}`);
+  }
+  return [...grupos].map(([key, franjas]) => {
+    const d = key.split(',').map(Number);
+    const seguidos = d.length > 2 && d.every((x, i) => i === 0 || x === d[i - 1] + 1);
+    const dias = seguidos ? `${DIAS[d[0]]} a ${DIAS[d[d.length - 1]]}` : d.map((x) => DIAS[x]).join(', ');
+    return `${dias} ${franjas.join(' y ')}`;
+  }).join(' · ');
+}
+
+// estado: 'turno' (abierta de 8 a 8), 'abierta' (en su horario) o 'cerrada'.
+// Orden: la de turno primero, después las abiertas y al final las cerradas.
+const ORDEN_ESTADO = { turno: 0, abierta: 1, cerrada: 2 };
 const getFarmacias = () => {
   const turno = activeTurnoName();
-  return DATA.farmacias.map((f) => ({ ...f, es_turno_hoy: f.name === turno }));
+  return DATA.farmacias
+    .map((f) => ({ ...f, estado: f.name === turno ? 'turno' : enHorario(f.horario) ? 'abierta' : 'cerrada' }))
+    .sort((a, b) => ORDEN_ESTADO[a.estado] - ORDEN_ESTADO[b.estado]);
 };
 const getFarmacia = (id) => getFarmacias().find((f) => f.id === id) ?? null;
 
@@ -299,11 +329,11 @@ function FarmaciasPage() {
   const farmacias = getFarmacias();
   return Layout('Farmacias',
     farmacias.length === 0 ? h('p.empty', null, 'Todavía no hay farmacias.') : h('div.list', null, farmacias.map((f) =>
-      h('button.list-row' + (f.es_turno_hoy ? '.outstanding-row' : ''), { type: 'button', onclick: () => go(`/farmacias/${f.id}`) },
+      h('button.list-row' + (f.estado === 'turno' ? '.outstanding-row' : ''), { type: 'button', onclick: () => go(`/farmacias/${f.id}`) },
         h('div.list-main', null,
           h('div.farmacia-name-row', null,
             h('span.list-name', null, f.name),
-            f.es_turno_hoy && h('span.badge.badge-blue', null, '🚪 Abierta'),
+            EstadoBadge(f.estado),
           ),
           f.address && h('span.list-meta', null, f.address),
         ),
@@ -312,15 +342,28 @@ function FarmaciasPage() {
   );
 }
 
+function EstadoBadge(estado) {
+  if (estado === 'turno') return h('span.badge.badge-blue', null, '🚪 De turno');
+  if (estado === 'abierta') return h('span.badge.badge-green', null, 'Abierta');
+  return h('span.badge.badge-gray', null, 'Cerrada');
+}
+
+function EstadoBanner(estado) {
+  if (estado === 'turno') return h('div.outstanding-banner', null, '🚪 De turno: abierta hasta las 8 de la mañana');
+  if (estado === 'abierta') return h('div.status-banner.status-open', null, 'Abierta ahora');
+  return h('div.status-banner.status-closed', null, 'Cerrada ahora');
+}
+
 function FarmaciaDetailPage(id) {
   const f = getFarmacia(id);
   if (!f) return Layout('Farmacia', h('p.empty', null, 'Farmacia no encontrada.'));
   const hasMap = !!f.latitude && !!f.longitude;
   return Layout(f.name,
-    f.es_turno_hoy && h('div.outstanding-banner', null, '🚪 Farmacia Abierta'),
+    EstadoBanner(f.estado),
     h('div.detail-box', null,
       f.address && InfoRow('📍 Dirección', f.address),
       f.phone && InfoRow('📞 Teléfono', f.phone),
+      f.horario?.length > 0 && InfoRow('🕐 Horario', textoHorario(f.horario)),
     ),
     hasMap && h('div.map-embed', null,
       h('iframe', {
@@ -459,8 +502,10 @@ if (!history.state) history.replaceState({ d: 0 }, '', location.hash || '#/');
 render();
 checkNews();
 
-// La farmacia de turno cambia a las 8: al volver a la app, redibujar.
+// Abierta/cerrada cambia con la hora: redibujar al volver a la app y, si se
+// están mirando las farmacias, cada minuto.
 document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+setInterval(() => { if (!document.hidden && location.hash.startsWith('#/farmacias')) render(); }, 60_000);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

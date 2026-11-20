@@ -276,6 +276,7 @@ html, body, #root {
 }
 .badge-blue { background: #0ea5e9; color: #fff; }
 .badge-gray { background: #475569; color: #fff; }
+.badge-green { background: #16a34a; color: #fff; }
 
 /* ── Spinner ──────────────────────────────────────────────── */
 .spinner-wrap { display: flex; justify-content: center; padding: 60px 0; }
@@ -320,6 +321,18 @@ html, body, #root {
   border-radius: 8px;
   margin-bottom: 20px;
 }
+
+.status-banner {
+  border: 1px solid var(--border);
+  font-weight: 800;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.status-open   { border-color: #16a34a; color: #16a34a; background: rgba(22, 163, 74, .12); }
+.status-closed { color: var(--muted); background: var(--surface); }
 
 .map-embed {
   border-radius: 12px;
