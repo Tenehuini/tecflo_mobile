@@ -6,10 +6,11 @@
 // el número). Escribir para quien usa la app, no para programadores.
 const CHANGELOG = [
   {
-    version: 2,
+    version: 3,
     date: '2026-11-20',
     items: [
-      'Farmacias de turno actualizadas para noviembre.',
+      'La app ahora se abre en modo oscuro. Si preferís el claro, tocá ☀️ arriba a la derecha.',
+      'El inicio queda más simple: Farmacias e Información útil.',
     ],
   },
 ];

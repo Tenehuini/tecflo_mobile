@@ -128,7 +128,7 @@ function navigateToLeaf(leaf, title) {
 const isLeaf = (item) => 'data' in item;
 
 // ---------- tema ----------
-function currentTheme() { return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'; }
+function currentTheme() { return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'; }
 function toggleTheme() {
   const t = currentTheme() === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme = t;
@@ -162,7 +162,7 @@ function MenuCard(name, item, onclick) {
 
 // Arma las tarjetas de un nivel del menú. `path` son los nombres desde la raíz.
 function MenuGrid(items, path) {
-  return h('div.card-grid', null, Object.entries(items).map(([name, item]) =>
+  return h('div.card-grid', null, Object.entries(items).filter(([, item]) => !item.hidden).map(([name, item]) =>
     MenuCard(name, item, isLeaf(item)
       ? () => navigateToLeaf(item, name)
       : () => go('/menu/' + [...path, name].map(encodeURIComponent).join('/')))));

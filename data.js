@@ -26,8 +26,10 @@ const DATA = {
 
   // Tarjetas del inicio y sus submenús. Cada hoja tiene `data`:
   // 'categoria_overview' / 'torneo_overview' (con `id`), 'eventos', 'farmacias' o 'info_util'.
+  // `hidden: true` oculta la tarjeta (borrar esa línea para volver a mostrarla).
   menu: {
     'Deportes': {
+      hidden: true,
       icon: '🏆',
       subtitle: 'Fútbol y más',
       items: {
@@ -69,7 +71,7 @@ const DATA = {
         'Padel': { icon: '🏓', items: {} },
       },
     },
-    'Eventos': { icon: '📅', subtitle: 'Próximos eventos', data: 'eventos' },
+    'Eventos': { hidden: true, icon: '📅', subtitle: 'Próximos eventos', data: 'eventos' },
     'Farmacias': { icon: '💊', subtitle: 'Farmacias abiertas', data: 'farmacias' },
     'Información útil': { icon: 'ℹ️', subtitle: 'Datos de interés', data: 'info_util' },
   },
