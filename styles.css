@@ -1,5 +1,4 @@
 /* ── Reset & base ─────────────────────────────────────────── */
-/* Versión para celulares de tecflo/web/src/index.css: mantener ambas iguales. */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 button { font: inherit; }

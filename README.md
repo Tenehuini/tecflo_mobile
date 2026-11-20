@@ -38,17 +38,14 @@ Igual que cualquier app: mantené apretado el ícono y elegí **Desinstalar** (A
 
 ## Para quien mantiene la app
 
-Es la versión para celulares de [tecflo](../tecflo) (`web/`), sin servidor: todo lo que muestra sale de `data.js`, que se genera desde la base y los datos fijos del backend de tecflo. Las pantallas de `app.js` replican las de `tecflo/web/src/pages` y `styles.css` es una copia adaptada de `tecflo/web/src/index.css`: si cambia una, cambiar la otra.
+La app no tiene servidor: todo lo que muestra (menú, farmacias y turnos, información útil, eventos y fútbol) está en `data.js`, que se edita a mano. Las listas se ordenan solas, así que no importa el orden en que se carguen.
 
 Cada vez que se publica un cambio:
 
-1. Si cambiaron los datos en tecflo (farmacias de turno, equipos, eventos…), regenerá `data.js`:
-   ```bash
-   python3 tools/export_data.py            # busca el backend en ../tecflo/backend
-   python3 tools/export_data.py /otra/ruta/tecflo/backend
-   ```
+1. Editá los datos en `data.js` y poné la fecha del día en `actualizado` (se muestra en el inicio).
+   - **Farmacias de turno:** cada mes, reemplazá `turnos` (día → farmacia) y actualizá la línea `Fuente:`. Usá los nombres de `F` (por ejemplo `F.PASTEUR`). Si el mes tiene menos días que el anterior, borrá los días que sobran.
 2. Reemplazá la entrada de `changelog.js` por la nueva novedad, con un número de `version` mayor al anterior. Al abrir la app, quien todavía no la vio ve una sola vez un cartel con esa última novedad.
-3. En `sw.js` subí el número de `CACHE` (por ejemplo, de `tecflo-v1` a `tecflo-v2`) para que los celulares descarguen los archivos nuevos.
+3. En `sw.js` subí el número de `CACHE` (por ejemplo, de `tecflo-v2` a `tecflo-v3`) para que los celulares descarguen los archivos nuevos.
 4. Commit y push a `main`: GitHub Pages publica solo.
 
 Para probar en la compu: `python3 -m http.server` y abrir http://localhost:8000.

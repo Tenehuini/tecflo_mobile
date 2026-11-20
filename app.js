@@ -1,8 +1,7 @@
 'use strict';
 
-// Tecflo para celulares: misma app que tecflo/web, pero sin servidor.
-// Los datos salen de data.js (generado por tools/export_data.py) y las
-// pantallas replican una por una las páginas de tecflo/web/src/pages.
+// Tecflo para celulares: app sin servidor. Todos los datos salen de data.js,
+// que se edita a mano.
 
 const $ = (sel) => document.querySelector(sel);
 const root = $('#root');
@@ -29,7 +28,10 @@ function h(tag, props, ...children) {
   return el;
 }
 
-// ---------- datos (equivalente a los endpoints del backend) ----------
+// ---------- datos ----------
+// Las listas se ordenan acá, así no importa el orden en que estén en data.js.
+const byName = (a, b) => a.name.localeCompare(b.name, 'es');
+const byField = (f) => (a, b) => String(a[f] ?? '').localeCompare(String(b[f] ?? ''));
 const parseDate = (s) => new Date(String(s).replace(' ', 'T')); // Safari no acepta "AAAA-MM-DD HH:MM"
 
 // Antes de las 8 de la mañana sigue de turno la farmacia del día anterior.
@@ -44,11 +46,11 @@ const getFarmacias = () => {
 };
 const getFarmacia = (id) => getFarmacias().find((f) => f.id === id) ?? null;
 
-const getEventos = () => DATA.eventos;
+const getEventos = () => [...DATA.eventos].sort(byField('date'));
 const getEvento = (id) => DATA.eventos.find((e) => e.id === id) ?? null;
 
 const equipoById = (id) => DATA.equipos.find((e) => e.id === id) ?? null;
-const getJugadores = (equipoId) => DATA.jugadores.filter((j) => j.deporte_equipo_id === equipoId);
+const getJugadores = (equipoId) => DATA.jugadores.filter((j) => j.deporte_equipo_id === equipoId).sort(byName);
 
 const getTorneoOverview = (id) => buildOverview(
   DATA.equipos.filter((e) => e.deporte_torneo_id === id),
@@ -59,8 +61,10 @@ const getCategoriaOverview = (id) => buildOverview(
   DATA.partidos.filter((p) => p.categoria_id === id),
 );
 
-// Igual que _build_overview en backend/app/crud/deportes.py.
+// Tabla de posiciones (3 puntos por partido ganado, 1 por empate) y partidos ordenados por fecha.
 function buildOverview(equipos, partidos) {
+  equipos = [...equipos].sort(byName); // a igualdad de puntos, por nombre
+  partidos = [...partidos].sort(byField('scheduled_at'));
   const stats = new Map(equipos.map((e) => [e.id, { equipo: e, played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0 }]));
   for (const p of partidos) {
     if (p.home_score == null || p.away_score == null) continue;
@@ -178,7 +182,7 @@ function HomePage() {
         ' · ',
         h('button.link-btn', { type: 'button', onclick: () => showNews(-1, 'Novedades') }, 'Novedades'),
       ),
-      h('p.data-date', null, 'Datos actualizados al ' + formatDate(DATA.generated)),
+      h('p.data-date', null, 'Datos actualizados al ' + formatDate(DATA.actualizado)),
     ),
   );
 }
