@@ -1,5 +1,5 @@
 // Cache offline: la app funciona sin conexión una vez abierta.
-const CACHE = 'tecflo-v1';
+const CACHE = 'tecflo-v2';
 const FILES = [
   './', 'index.html', 'styles.css', 'app.js', 'data.js', 'changelog.js', 'manifest.json',
   'assets/icon-192.png', 'assets/icon-512.png',

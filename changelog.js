@@ -6,10 +6,10 @@
 // el número). Escribir para quien usa la app, no para programadores.
 const CHANGELOG = [
   {
-    version: 1,
+    version: 2,
     date: '2026-11-20',
     items: [
-      'Tecflo ya se puede instalar en el celular y funciona sin internet.',
+      'Farmacias de turno actualizadas para noviembre.',
     ],
   },
 ];
