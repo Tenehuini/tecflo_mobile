@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tecflo">
+  <title>Tecflo</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Aplicar el tema guardado antes de dibujar, para que no parpadee.
+    try { document.documentElement.dataset.theme = localStorage.getItem('tecflo.theme') || 'light'; } catch (e) { /* sin storage */ }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Aviso de novedades -->
+  <dialog id="news-dialog" class="news-dialog" aria-labelledby="news-title">
+    <h2 id="news-title">¡Hay novedades!</h2>
+    <div id="news-body" class="news-body"></div>
+    <button type="button" id="news-ok" class="btn btn-primary">¡Genial!</button>
+  </dialog>
+
+  <!-- Cómo instalar -->
+  <dialog id="install-dialog" class="news-dialog" aria-labelledby="install-title">
+    <h2 id="install-title">Instalar la app</h2>
+    <p id="install-done" class="install-note" hidden>✅ Ya estás usando la app instalada.</p>
+    <div class="install-tabs" role="tablist">
+      <button type="button" role="tab" class="install-tab" data-os="android" aria-selected="true">Android</button>
+      <button type="button" role="tab" class="install-tab" data-os="ios" aria-selected="false">iPhone</button>
+    </div>
+    <div class="news-body">
+      <div class="install-panel" data-os="android" role="tabpanel">
+        <ol>
+          <li>Abrí esta página en <b>Chrome</b> (o en el navegador que uses: Samsung Internet, Edge, Firefox…):<span class="install-url"><code>https://tenehuini.github.io/tecflo_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/tecflo_mobile/">Copiar</button></span></li>
+          <li>Tocá el menú del navegador: <b>⋮</b> (tres puntos) o <b>≡</b> (tres rayas), arriba o abajo a la derecha.</li>
+          <li>Elegí <b>Instalar app</b>. Si no aparece, buscá <b>Agregar a pantalla principal</b> o <b>Agregar página a → Pantalla de inicio</b>.</li>
+          <li>Confirmá con <b>Instalar</b> o <b>Agregar</b>.</li>
+        </ol>
+        <p class="install-note">El ícono de Tecflo queda en la pantalla de inicio, como cualquier app.</p>
+      </div>
+      <div class="install-panel" data-os="ios" role="tabpanel" hidden>
+        <ol>
+          <li>Abrí esta página en <b>Safari</b> (es lo más seguro; en otros navegadores no siempre aparece la opción):<span class="install-url"><code>https://tenehuini.github.io/tecflo_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/tecflo_mobile/">Copiar</button></span></li>
+          <li>Tocá el botón <b>Compartir</b>: el cuadrado con una flecha hacia arriba ⬆️. Según la versión está en la barra de abajo, arriba, o dentro del menú <b>⋯</b>.</li>
+          <li>Deslizá hacia abajo y elegí <b>Agregar a inicio</b> (o <b>Agregar a pantalla de inicio</b>).</li>
+          <li>Tocá <b>Agregar</b>, arriba a la derecha.</li>
+        </ol>
+        <p class="install-note">El ícono queda en la pantalla de inicio. Funciona igual en iPad.</p>
+      </div>
+    </div>
+    <button type="button" id="install-ok" class="btn btn-primary" autofocus>Entendido</button>
+  </dialog>
+
+  <script src="data.js"></script>
+  <script src="changelog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
